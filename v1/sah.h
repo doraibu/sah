@@ -21,7 +21,12 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-#define STACK_SIZE 4096
+#define MEGABYTE (1024 * 1024)
+#define STACK_TINY MEGABYTE
+#define STACK_SMALL (2 * MEGABYTE)
+#define STACK_MEDIUM (4 * MEGABYTE)
+#define STACK_LARGE (8 * MEGABYTE)
+#define STACK_HUGE (16 * MEGABYTE)
 
 /* =========================
    Private types
@@ -36,6 +41,7 @@ struct _stack_header {
    ========================= */
 
 struct sah_stack {
+	size_t payload_size;
 	uint8_t* bp;
 	uint8_t* sp;
 }; __attribute__((aligned(64)));
@@ -44,7 +50,7 @@ struct sah_stack {
    Public API
    ========================= */
 
-struct sah_stack* screate(void);
+struct sah_stack* screate(size_t);
 void sdestroy(struct sah_stack*);
 static inline void* push(struct sah_stack*, size_t);
 static inline void pop(struct sah_stack*, size_t);
@@ -75,10 +81,10 @@ static inline void sreset(struct sah_stack* s)
 
 #define ALIGN(n) (((n) + 15) & ~15)
 
-struct sah_stack* screate(void)
+struct sah_stack* screate(size_t psize)
 {
 	size_t guard = sysconf(_SC_PAGESIZE);
-	size_t total = guard + STACK_SIZE;
+	size_t total = guard + psize;
 	uint8_t* mem = mmap(NULL, total, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (mem == MAP_FAILED)
 		return NULL;
@@ -91,6 +97,7 @@ struct sah_stack* screate(void)
 		return NULL;
 	}
 
+	s->payload_size = psize;
 	s->bp = mem + total;
 	s->sp = s->bp;
 
@@ -101,8 +108,9 @@ void sdestroy(struct sah_stack* s)
 {
 	if (s == NULL) return;
 
+	size_t payload = s->payload_size;
 	size_t guard = sysconf(_SC_PAGESIZE);
-	size_t total = guard + STACK_SIZE;
+	size_t total = guard + payload;
 
 	uint8_t* mem = s->bp - total;
 	
@@ -141,7 +149,12 @@ void spop(struct sah_stack* s)
 #include <stdlib.h>
 #include <windows.h>
 
-#define STACK_SIZE 4096
+#define MEGABYTE (1024 * 1024)
+#define STACK_TINY MEGABYTE
+#define STACK_SMALL (2 * MEGABYTE)
+#define STACK_MEDIUM (4 * MEGABYTE)
+#define STACK_LARGE (8 * MEGABYTE)
+#define STACK_HUGE (16 * MEGABYTE)
 
 /* =========================
    Private Types
@@ -156,6 +169,7 @@ struct _stack_header {
    ========================= */
 
 struct sah_stack {
+	size_t payload_size;
 	uint8_t* bp;
 	uint8_t* sp;
 }; __attribute__((aligned(64)));
@@ -164,7 +178,7 @@ struct sah_stack {
    Public API
    ========================= */
 
-struct sah_stack* screate(void);
+struct sah_stack* screate(size_t);
 void sdestroy(struct sah_stack*);
 static inline void* push(struct sah_stack*, size_t);
 static inline void pop(struct sah_stack*, size_t);
@@ -195,14 +209,14 @@ static inline void sreset(struct sah_stack* s)
 
 #define ALIGN(n) (((n) + 15) & ~15)
 
-struct sah_stack* screate(void)
+struct sah_stack* screate(size_t psize)
 {
 	SYSTEM_INFO si;
 	GetSystemInfo(&si);
 	DWORD dw = si.dwPageSize;
 
 	size_t guard = (size_t)dw;
-	size_t total = guard + STACK_SIZE;
+	size_t total = guard + psize;
 	uint8_t* mem = VirtualAlloc(NULL, total, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 	if (!mem)
 		return NULL;
@@ -216,6 +230,7 @@ struct sah_stack* screate(void)
 		return NULL;
 	}
 
+	s->payload_size = psize;
 	s->bp = mem + total;
 	s->sp = s->bp;
 	return s;
@@ -229,7 +244,8 @@ void sdestroy(struct sah_stack* s)
 	GetSystemInfo(&si);
 	DWORD dw = si.dwPageSize;
 	size_t guard = (size_t)dw;
-	size_t total = guard + STACK_SIZE;
+	size_t payload = s->payload_size;
+	size_t total = guard + payload;
 
 	uint8_t* mem = s->bp - total;
 	VirtualFree(mem, 0, MEM_RELEASE);
