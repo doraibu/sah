@@ -175,17 +175,20 @@ void spop(struct sah_stack*);
 /* END PUBLIC API FUNCTIONS SIGNATURE */
 
 /* LOWEST LEVEL OPERATIONS */
+/* FUNCTION push(), PUSHES INTO THE STACK, MANUAL CONTROL OF SIZE TO PUSH */
 static inline void* push(struct sah_stack* s, size_t n)
 {
 	s->sp -= n;
 	return s->sp;
 }
 
+/* FUNCTION pop(), POP THE STACK, MANUAL CONTROL OF SIZE TO POP */
 static inline void pop(struct sah_stack* s, size_t n)
 {
 	s->sp += n;
 }
 
+/* FUNCTION sreset(), RESET THE STACK MOVING THE SP TO BP, ALLOWING REUSE */
 static inline void sreset(struct sah_stack* s)
 {
 	s->sp = s->bp;
@@ -193,8 +196,10 @@ static inline void sreset(struct sah_stack* s)
 
 #ifdef SAH_IMPLEMENTATION
 
+/* AUTO ALIGNMENT MACRO */
 #define ALIGN(n) (((n) + 15) & ~15)
 
+/* FUNCTION screate(), CREATES THE STACK AND RETURNS THE STACK CONTROLLER/HANDLER FOR USE */
 struct sah_stack* screate(size_t psize)
 {
 	SYSTEM_INFO si;
@@ -222,6 +227,7 @@ struct sah_stack* screate(size_t psize)
 	return s;
 }
 
+/* FUNCTION sdestroy(), DESTROY THE STACK GIVEN A STACK CONTROLLER/HANDLER, FREE ALL MEMORY INCLUDING THE STACK CONTROLLER */
 void sdestroy(struct sah_stack* s)
 {
 	if (!s) return;
@@ -238,6 +244,7 @@ void sdestroy(struct sah_stack* s)
 	free(s);
 }
 
+/* FUNCTION spush(), PUSH INTO THE STACK WITH HEADERS TO TRACK SIZE FOR SPOP */
 void* spush(struct sah_stack* s, size_t n)
 {
 	size_t rtotal = sizeof(struct _stack_header) + n;
@@ -251,6 +258,7 @@ void* spush(struct sah_stack* s, size_t n)
 	return (void*)(hdr + 1);
 }
 
+/* FUNCTION spop(), POP THE STACK, AUTO TRACKS THE AMOUNT TO POP WITH spush() HEADER */
 void spop(struct sah_stack* s)
 {
 	struct _stack_header* hdr = (struct _stack_header*)s->sp;
