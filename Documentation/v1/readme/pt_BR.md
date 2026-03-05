@@ -1,10 +1,10 @@
 ## Documentação
-[English Documentation](Documentation/v1/docs/doc\en_US.md) \
-[Documentação em Português](Documentation/v1/docs/doc\pt_BR.md) \
-[ドキュメント](Documentation/v1/docs/doc\ja_JP.md)
+[English Documentation](Documentation/v1/docs/en_US.md) \
+[Documentação em Português](Documentation/v1/docs/pt_BR.md) \
+[ドキュメント](Documentation/v1/docs/ja_JP.md)
 ## Outros Idiomas (README)
-[Português](Documentation/v1/readme/README\pt_BR.md) \
-[日本語](Documentation/v1/readme/README\ja_JP.md)
+[Português](Documentation/v1/readme/pt_BR.md) \
+[日本語](Documentation/v1/readme/ja_JP.md)
 ## Introdução
 SAH (Stack as Heap) é uma pequena biblioteca C de baixo nível que fornece um alocador baseado em pilha, construído sobre primitivas de memória virtual. É projetada para alocações temporárias, arenas, parsers, runtimes, máquinas virtuais e qualquer código crítico de desempenho que se beneficie de um gerenciamento de memória previsível e rápido.
 
