@@ -30,6 +30,9 @@
 #define STACK_LARGE (8 * MEGABYTE)
 #define STACK_HUGE (16 * MEGABYTE)
 #define ALIGN(n) (((n) + 15) & ~15)
+#define NORMAL_POOL (64 * MEGABYTE)
+#define	LARGE_POOL (128 * MEGABYTE)
+
 
 /* BEGIN SAH PUBLIC API SIGNATURE */
 
