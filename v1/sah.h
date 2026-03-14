@@ -30,18 +30,17 @@
 #define STACK_LARGE (8 * MEGABYTE)
 #define STACK_HUGE (16 * MEGABYTE)
 #define ALIGN(n) (((n) + 15) & ~15)
-#define NORMAL_POOL (64 * MEGABYTE)
-#define	LARGE_POOL (128 * MEGABYTE)
-
-
-/* BEGIN SAH PUBLIC API SIGNATURE */
+#define MEM_POOL (64 * MEGABYTE)
+#define MEM_POOL2 (128 * MEGABYTE)
 
 /* BEGIN PUBLIC API TYPES SIGNATURE */
 
+// USED BY BASIC MODULE, INTERNAL HEADER FOR spop() TRACK SIZE
 struct _stack_header {
 	size_t size;
 };
 
+// USED BY BASIC MODULE, STACK CONTROLLER, ALLOCATED ON THE HEAP
 struct sah_stack {
 	size_t payload_size;
 	uint8_t* bp;
