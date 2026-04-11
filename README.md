@@ -71,13 +71,13 @@ To use SAH, define `SAH_IMPLEMENTATION` in exactly one translation unit before i
 | Platform | Status  |
 |----------|---------|
 | Linux    | Ready   |
-| Windows  | Ready   |
+| NT       | Ready   |
 
 On Linux, SAH uses `mmap` and `mprotect`. On Windows, SAH uses `VirtualAlloc` and `VirtualProtect`. The API is identical on both platforms.
 
 ## License
 
-BSD 3-Clause
+BSD-3/Public Domain
 
 ## Observation
 
