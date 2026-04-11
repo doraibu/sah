@@ -78,7 +78,7 @@ On Linux, SAH uses `mmap` and `mprotect`. On Windows, SAH uses `VirtualAlloc` an
 
 ## License
 
-BSD-3/Public Domain
+BSD-3-Clause / Public Domain
 
 ## Observation
 
