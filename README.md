@@ -74,7 +74,7 @@ To use SAH, define `SAH_IMPLEMENTATION` in exactly one translation unit before i
 | NT       | Ready   |
 | OS X     | Void    |
 
-On Linux, SAH uses `mmap` and `mprotect`. On Windows, SAH uses `VirtualAlloc` and `VirtualProtect`. The API is identical on both platforms.
+On Linux, SAH uses `mmap` and `mprotect`. On NT, SAH uses `VirtualAlloc` and `VirtualProtect`. The API is identical on both platforms.
 
 ## License
 
@@ -82,4 +82,4 @@ BSD-3-Clause / Public Domain
 
 ## Observation
 
-SAH is a personal project, written for enjoyment and because I wanted a stack based allocator, as of now it can only create normal stacks, but on the future I will implement dynamic stacks, Forth size stacks (only bytes in size/size of a word or instruction) to people who want to make Forth-based programs, virtual stacks which are stacks that only live on a certain context and have weird capabilities like being able to pass the stack via function parameters (yes, this sound strange, but my mind is strange...) and other things. Overall SAH is experimental and should be treated as such. Use in production at your own discretion.
+SAH is a personal project, written for enjoyment and because I wanted a stack based allocator, as of now it can only create normal stacks, but on the future I will implement dynamic stacks, Forth size stacks (only bytes in size/size of a word or instruction) to people who want to make Forth-based programs, virtual stacks which are stacks that live on .data and aren't bound to any function, the lib will literally change the execution context of the function whom wants to use the stack and make the function itself jumps to the .data moving RSP, RBP and everything else and essentially merging the function with the stack, where writing on the function itself writes on the stack, hence the name "virtual", it only exists when a function needs it therefore jumps to it, achieving true zero-copy data transfer, it is a crazy, absurd and unsafe idea, but my mind is strange and this lib was never serious to begin with, it is a big playground of ideas. Overall SAH is experimental and should be treated as such. Use in production at your own discretion.
